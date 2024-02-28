@@ -193,7 +193,8 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
     {
       case Equirectangular:
         ss << "  const float pi = 3.14159265359;\n"
-              "  float phi = y * pi;\n"
+              "  const float fov = 10.0 * pi / 180.0;\n"
+              "  float phi = y * fov + ((pi / 2) - (fov / 2));\n"
               "  float theta = angle * x + (pi - 0.5 * angle);\n"
               "  vec3 dir = vec3(-sin(phi)*sin(theta), cos(phi), -sin(phi)*cos(theta));\n"
               "  gl_FragData[0] = texture(source, dir);\n";
@@ -262,10 +263,8 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
 //------------------------------------------------------------------------------
 void vtkPanoramicProjectionPass::RenderOnFace(const vtkRenderState* s, int faceIndex)
 {
-  // We can cull the back face is angle is inferior to 2 * (pi - atan(sqrt(2))) radians
-  const double cullBackFaceAngle = 250.528779;
 
-  if (faceIndex == GL_TEXTURE_CUBE_MAP_NEGATIVE_Z && this->Angle <= cullBackFaceAngle)
+  if (faceIndex == GL_TEXTURE_CUBE_MAP_NEGATIVE_Y || faceIndex == GL_TEXTURE_CUBE_MAP_POSITIVE_Y)
   {
     return;
   }
