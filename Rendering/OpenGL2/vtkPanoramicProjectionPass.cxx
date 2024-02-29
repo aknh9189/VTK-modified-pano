@@ -58,6 +58,7 @@ void vtkPanoramicProjectionPass::PrintSelf(ostream& os, vtkIndent indent)
       os << "Unknown\n";
   }
   os << indent << "Angle: " << this->Angle << "\n";
+  os << indent << "vFOV: " << this->vFOV << "\n";
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +182,8 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
       "uniform samplerCube source;\n"
       "uniform float angle;\n"
       "uniform vec2 scale;\n"
-      "uniform vec2 shift;\n\n");
+      "uniform vec2 shift;\n"
+      "uniform float vFOV;\n\n");
 
     std::stringstream ss;
 
@@ -193,8 +195,7 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
     {
       case Equirectangular:
         ss << "  const float pi = 3.14159265359;\n"
-              "  const float fov = 10.0 * pi / 180.0;\n"
-              "  float phi = y * fov + ((pi / 2) - (fov / 2));\n"
+              "  float phi = y * vFOV + ((pi / 2) - (fov / 2));\n"
               "  float theta = angle * x + (pi - 0.5 * angle);\n"
               "  vec3 dir = vec3(-sin(phi)*sin(theta), cos(phi), -sin(phi)*cos(theta));\n"
               "  gl_FragData[0] = texture(source, dir);\n";
@@ -240,6 +241,7 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
   this->CubeMapTexture->Activate();
   this->QuadHelper->Program->SetUniformi("source", this->CubeMapTexture->GetTextureUnit());
   this->QuadHelper->Program->SetUniformf("angle", vtkMath::RadiansFromDegrees(this->Angle));
+  this->QuadHelper->Program->SetUniformf("vFOV", vtkMath::RadiansFromDegrees(this->vFOV));
 
   double viewport[4];
   renWin->GetTileViewport(viewport[0], viewport[1], viewport[2], viewport[3]);

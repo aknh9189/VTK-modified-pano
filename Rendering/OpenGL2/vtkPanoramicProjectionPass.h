@@ -98,6 +98,9 @@ public:
   vtkSetClampMacro(Angle, double, 90.0, 360.0);
   ///@}
 
+  vtkGetMacro(vFOV, double);
+  vtkSetMacro(vFOV, double);
+
   ///@{
   /**
    * Get/Set the interpolation mode.
@@ -127,6 +130,7 @@ protected:
   vtkOpenGLQuadHelper* QuadHelper = nullptr;
 
   unsigned int CubeResolution = 300;
+  double vFOV = 10.0;
   int ProjectionType = Equirectangular;
   double Angle = 180.0;
   bool Interpolate = false;
