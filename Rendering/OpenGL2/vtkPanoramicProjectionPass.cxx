@@ -195,7 +195,7 @@ void vtkPanoramicProjectionPass::Project(vtkOpenGLRenderWindow* renWin)
     {
       case Equirectangular:
         ss << "  const float pi = 3.14159265359;\n"
-              "  float phi = y * vFOV + ((pi / 2) - (fov / 2));\n"
+              "  float phi = y * vFOV + ((pi / 2) - (vFOV / 2));\n"
               "  float theta = angle * x + (pi - 0.5 * angle);\n"
               "  vec3 dir = vec3(-sin(phi)*sin(theta), cos(phi), -sin(phi)*cos(theta));\n"
               "  gl_FragData[0] = texture(source, dir);\n";
