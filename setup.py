@@ -2,6 +2,9 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import os, sys
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CMakeBuild(build_ext):
     def run(self):
@@ -25,6 +28,10 @@ class CMakeBuild(build_ext):
         super().run()
 
     def run_cmake(self):
+        import importlib.util
+        if importlib.util.find_spec('cmake') is not None:
+            print("WARNING: if you have a pip installed copy of cmake installed and are getting 'CMake not found errors', try uninstalling it")
+
         build_dir = self.cwd / 'build'
         build_dir.mkdir(exist_ok=True) 
 
