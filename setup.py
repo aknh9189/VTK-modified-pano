@@ -56,7 +56,7 @@ class CMakeBuild(build_ext):
         self.spawn(cmake_command)
         # build
         print("building package")
-        self.spawn(['cmake', '--build', build_dir, '-j'])
+        self.spawn(['cmake', '--build', str(build_dir), '-j'])
         # install the wheel
         print("INSTALLING package")
         os.chdir('build')
